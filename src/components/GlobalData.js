@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -19,22 +19,35 @@ const useStyles = makeStyles((theme) => ({
 export default function GlobalData() {
   const classes = useStyles();
 
+  const [globalData, setGlobalData]=useState();
+  
+  useEffect(()=>{
+    async function fetchGlobalData(){
+      const apiResponse=await fetch('https://api.covid19api.com/summary');
+      const dataFromAPI=await apiResponse.json();
+      // console.log(dataFromAPI.Global.NewConfirmed);
+      console.log(dataFromAPI.Global);
+      setGlobalData(dataFromAPI);
+    }
+  fetchGlobalData();
+  },[])
+
   return (
     <div className={classes.root}>
       {/* <Paper elevation={0} />
       <Paper /> */}
         <Paper elevation={3}>
-          <Typography variant="h4" gutterBottom>
-              1000
+          <Typography variant="h4" gutterBottom style={{color: 'black'}}>
+           {globalData&&globalData.Global&&globalData.Global.TotalConfirmed} 
           </Typography>
-          <Typography variant="subtitle2" gutterBottom>
+          <Typography variant="subtitle2" gutterBottom style={{color: 'black' , fontWeight:'bold'}}>
               Global Data as of Today
           </Typography>
         </Paper>
 
         <Paper elevation={3}>
         <Typography variant="h4" gutterBottom style={{color: 'orange'}}>
-              1000
+            {globalData&&globalData.Global&&globalData.Global.NewConfirmed}
           </Typography>
           <Typography variant="subtitle2" gutterBottom style={{color: 'orange' , fontWeight:'bold'}}>
               Active
@@ -44,7 +57,7 @@ export default function GlobalData() {
 
         <Paper elevation={3}>
         <Typography variant="h4" gutterBottom style={{color: 'green'}}>
-              1000
+              {globalData&&globalData.Global&&globalData.Global.TotalRecovered}
           </Typography>
           <Typography variant="subtitle2" gutterBottom style={{color: 'green' , fontWeight:'bold'}}>
               Recovered
@@ -54,7 +67,7 @@ export default function GlobalData() {
 
         <Paper elevation={3}>
         <Typography variant="h4" gutterBottom style={{color: 'red'}}>
-              1000
+        {globalData&&globalData.Global&&globalData.Global.TotalDeaths}
           </Typography>
           <Typography variant="subtitle2" gutterBottom style={{color: 'red' , fontWeight:'bold'}}>
               Fatalities
